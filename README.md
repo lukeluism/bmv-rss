@@ -3,19 +3,15 @@
 Inoffizieller Feed aus der öffentlichen Presseübersicht des Bundesministeriums für Verkehr. Kein Angebot des BMV. Enthält Titel, Veröffentlichungsdatum und Original-Link, keine Volltexte. Stand der Umsetzung: 05.11.2026.
 
 ## In dein vorhandenes Repository übernehmen
-
-1. `scraper.py` und `requirements.txt` im Hauptverzeichnis ersetzen.
-2. `test_scraper.py` zusätzlich im Hauptverzeichnis anlegen.
-3. `data/items.json` beim ersten Start mit `[]` befüllen. Einen bereits befüllten Bestand später nicht überschreiben.
-4. Den Workflow unter dem exakten Pfad `.github/workflows/update-feed.yml` speichern. Dieser Ordner ist in manchen Dateimanagern ausgeblendet. Im GitHub-Webeditor lässt sich der vollständige Pfad über **Add file → Create new file** eingeben.
-5. Optional `.gitignore` und diese Anleitung übernehmen.
+1. Optional `.gitignore` und diese Anleitung übernehmen.
 6. Alles auf dem Standardbranch speichern (gewöhnlich `main`).
 7. Unter **Settings → Pages → Build and deployment → Source** die Option **GitHub Actions** wählen. Dafür kann ein öffentliches Repository im kostenlosen Tarif verwendet werden.
 8. Unter **Actions → Update feed → Run workflow** den ersten Lauf starten. Ein durch Dateiänderungen ausgelöster Lauf vor der Pages-Einrichtung kann fehlschlagen; danach manuell neu starten.
 9. Nach erfolgreichem Build und Deploy unter **Settings → Pages** die veröffentlichte Adresse öffnen. `feed.xml` an diese Adresse anhängen oder den RSS-Link auf der Startseite kopieren.
 10. Diese URL in deinem RSS-Reader abonnieren und gegen die BMV-Übersicht prüfen.
 
-Benutzername und Repository-Name müssen im Skript nicht ersetzt werden: `configure-pages` liefert die tatsächliche Basisadresse. Docker, eine eigene Domain und API-Schlüssel sind nicht erforderlich. Repository- oder Organisationsregeln können automatisches Schreiben oder Pages-Deployments untersagen; diese Beschränkungen werden nicht umgangen. Die Workflow-Datei vergibt die benötigten Rechte gezielt pro Job.
+Benutzername und Repository-Name müssen im Skript nicht ersetzt werden: `configure-pages` liefert die tatsächliche Basisadresse. Docker, eine eigene Domain und API-Schlüssel sind nicht erforderlich. 
+Repository- oder Organisationsregeln können automatisches Schreiben oder Pages-Deployments untersagen; diese Beschränkungen werden nicht umgangen. Die Workflow-Datei vergibt die benötigten Rechte gezielt pro Job.
 
 ## Was automatisch passiert
 
@@ -49,7 +45,7 @@ Python 3.11 oder neuer, empfohlen 3.12:
 ```bash
 python -m pip install -r requirements.txt
 python -m unittest -v
-python scraper.py --site-url https://DEIN-NAME.github.io/bmv-rss
+python scraper.py --site-url https://dein-username.github.io/bmv-rss
 ```
 
 `--site-url` muss der späteren Basisadresse entsprechen. Für einen Test ohne Änderung des eigentlichen Bestands:
@@ -64,4 +60,4 @@ python scraper.py --pages 3 --site-url https://example.github.io/bmv-rss --state
 - Pages-Workflow: https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages
 - Zeitpläne: https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule
 
-Die Python-Abhängigkeit und GitHub Actions verwenden feste Versionsnummern bzw. Major-Tags. Diese sollten bei längerer Nutzung gelegentlich aktualisiert werden.
+Die Python-Abhängigkeit und GitHub Actions verwenden feste Versionsnummern bzw. Major-Tags. Diese sollten bei längerer Nutzung gelegentlich aktualisiert werden. Sollte der Feed dysfunktional sein, gerne bei mir melden oder fix vorschlagen :)
