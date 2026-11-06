@@ -15,7 +15,7 @@ import xml.etree.ElementTree as ET
 
 from bs4 import BeautifulSoup
 
-SOURCE = "https://www.bmv.de/SiteGlobals/Forms/Suche/DE/Expertensuche_Formular.html?documentType_=PressRelease"
+SOURCE = "https://www.bmv.de/DE/Meta/BMV-Aktuell/bmv-aktuell.html"
 ROOT = Path(__file__).resolve().parent
 DC = "http://purl.org/dc/elements/1.1/"
 ATOM = "http://www.w3.org/2005/Atom"
@@ -53,18 +53,24 @@ def parse_page(html, page_url):
     soup = BeautifulSoup(html, "html.parser")
     base_tag = soup.find("base", href=True)
     base = bmv_url(base_tag["href"], page_url) if base_tag else page_url
-    cards = soup.select(".search-results .card-list > li.card")
+    cards = soup.select(".container-listview .card-grid > li.card, .search-results .card-list > li.card")
     if not cards:
         raise ValueError("Keine Ergebniskarten gefunden. Seitenstruktur oder Quelle prüfen.")
     items = []
     for card in cards:
         link = card.select_one(".card-title a.card-link[href]")
         date_tag = card.select_one(".card-date")
-        if not link or not date_tag:
-            raise ValueError("Ergebniskarte ohne Titel/Link oder Datum")
+        if not link:
+            raise ValueError("Ergebniskarte ohne Titel/Link")
         url = bmv_url(link["href"], base)
         if not re.search(r"/SharedDocs/DE/Pressemitteilungen/\d{4}/[^/]+\.html$", urlsplit(url).path):
-            raise ValueError(f"Unerwarteter Meldungspfad: {url}")
+            # BMV Aktuell enthält auch Interviews, Artikel und andere Formate.
+            marker = card.select_one('.card-icon .sr-only, .card-topline')
+            if marker and marker.get_text(strip=True) == 'Pressemitteilung':
+                raise ValueError(f"Pressemitteilung mit unerwartetem Meldungspfad: {url}")
+            continue
+        if not date_tag:
+            raise ValueError("Pressemitteilung ohne Datum")
         # BeautifulSoup.get_text(' ') zerlegt z. B. E-<abbr>Pkw</abbr> unnötig.
         title = " ".join(link.get_text().split())
         match = re.search(r"\b\d{2}\.\d{2}\.\d{4}\b", date_tag.get_text(" ", strip=True))
@@ -87,13 +93,15 @@ def collect(source, pages):
         visited.add(url)
         logging.info("Abruf: %s", url)
         items, next_url = parse_page(fetch(url), url)
-        if all(item["url"] in found for item in items):
+        if items and all(item["url"] in found for item in items):
             raise ValueError("Navigation liefert dieselben Meldungen erneut")
         found.update({item["url"]: item for item in items})
         if not next_url:
             break
         url = next_url
         time.sleep(1)
+    if not found:
+        raise ValueError("Keine Pressemitteilungen auf den geprüften Seiten gefunden")
     return list(found.values())
 
 
