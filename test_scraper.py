@@ -30,6 +30,13 @@ class ScraperTests(unittest.TestCase):
             with self.subTest(html=html), self.assertRaises(ValueError):
                 scraper.parse_page(html, scraper.SOURCE)
 
+    def test_mixed_grid_filters_interviews(self):
+        interview = '''<li class="card"><p class="card-title"><a class="card-link" href="SharedDocs/DE/Interviews/2026/test.html">Interview</a></p><p class="card-date">03.11.2026</p></li>'''
+        grid = HTML.replace('<div class="search-results"><ul class="card-list">', '<div class="container-listview"><ul class="card-grid">').replace('</ul></div>', interview + '</ul></div>')
+        items, _ = scraper.parse_page(grid, scraper.SOURCE)
+        self.assertEqual(len(items), 1)
+        self.assertEqual(items[0]['title'], 'Mehr E-Pkw & Bahn')
+
     def test_repeated_pagination_fails(self):
         with patch('scraper.fetch', return_value=HTML), patch('scraper.time.sleep'):
             with self.assertRaises(ValueError):
