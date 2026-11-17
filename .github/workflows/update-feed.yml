@@ -3,7 +3,7 @@ name: Update feed
 on:
   workflow_dispatch:
   schedule:
-    - cron: '7,37 * * * *'
+    - cron: '30 * * * *'
   push:
     paths:
       - 'scraper.py'
