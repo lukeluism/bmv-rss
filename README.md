@@ -1,6 +1,6 @@
 # BMV-Pressemitteilungen als RSS
 
-Inoffizieller Feed aus der öffentlichen Presseübersicht des Bundesministeriums für Verkehr. Kein Angebot des BMV. Enthält Titel, Veröffentlichungsdatum und Original-Link, keine Volltexte. Stand der Umsetzung: 05.11.2026.
+Inoffizieller Feed aus der öffentlichen Presseübersicht des Bundesministeriums für Verkehr. Kein Angebot des BMV. Enthält Titel, Veröffentlichungsdatum und Original-Link, keine Volltexte. Stand der Umsetzung: 17.11.2026.
 
 ## In dein vorhandenes Repository übernehmen
 1. Optional `.gitignore` und diese Anleitung übernehmen.
@@ -15,7 +15,7 @@ Repository- oder Organisationsregeln können automatisches Schreiben oder Pages-
 
 ## Was automatisch passiert
 
-- Zwei geplante Läufe pro Stunde (Minute 7 und 37), zusätzlich manuell oder bei Änderungen an den Programmdateien.
+- Ein geplanter Lauf pro Stunde (Minute 30), zusätzlich manuell oder bei Änderungen an den Programmdateien.
 - Drei Ergebnisseiten werden nacheinander abgerufen; relative Links werden anhand des HTML-`base`-Elements aufgelöst.
 - Beim ersten Lauf wird damit ein Ausschnitt des Archivs übernommen (in der geprüften Übersicht 30 Meldungen). Es erfolgt kein vollständiger historischer Import.
 - Die Meldungs-URL dient als feste RSS-Kennung. Geänderte Titel oder Daten aktualisieren denselben Eintrag.
